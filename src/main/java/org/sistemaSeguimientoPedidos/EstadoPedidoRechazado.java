@@ -2,18 +2,21 @@ package org.sistemaSeguimientoPedidos;
 
 public class EstadoPedidoRechazado implements EstadoPedido {
 
-    private static EstadoPedidoRechazado instancia = new EstadoPedidoRechazado();
+    private static EstadoPedidoRechazado instancia;
 
     private EstadoPedidoRechazado() {
     }
 
     public static EstadoPedidoRechazado getInstancia() {
+        if (instancia == null) {
+            instancia = new EstadoPedidoRechazado();
+        }
         return instancia;
     }
 
-    public void procesarPedido(SujetoPedido sujetoPedido) {
-        // Lógica para procesar un pedido en proceso
-        System.out.println("El pedido ha sido rechazado");
-        sujetoPedido.cambiarEstado(EstadoPedidoEntregado.getInstancia());
+
+    @Override
+    public void procesarPedido(Pedido pedido) {
+        System.out.println("El pedido  " + pedido.getId() + " eha sido rechazado");
     }
 }

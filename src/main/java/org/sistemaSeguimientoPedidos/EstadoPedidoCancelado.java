@@ -1,18 +1,20 @@
 package org.sistemaSeguimientoPedidos;
 
 public class EstadoPedidoCancelado implements EstadoPedido {
-    private static EstadoPedidoCancelado instancia = new EstadoPedidoCancelado();
+    private static EstadoPedidoCancelado instancia;
 
     private EstadoPedidoCancelado() {
     }
 
     public static EstadoPedidoCancelado getInstancia() {
+        if (instancia == null) {
+            instancia = new EstadoPedidoCancelado();
+        }
         return instancia;
     }
 
-    public void procesarPedido(SujetoPedido sujetoPedido) {
-        // Lógica para procesar un pedido en proceso
-        System.out.println("El pedido ha sido cancelado");
-        sujetoPedido.cambiarEstado(EstadoPedidoEntregado.getInstancia());
+    public void procesarPedido(Pedido pedido) {
+        System.out.println("El pedido " + pedido.getId() + " ha sido cancelado");
     }
+
 }

@@ -8,31 +8,26 @@ public class Main {
         SistemaSeguimientoPedidos sistema = SistemaSeguimientoPedidos.getInstancia();
 
         // Crear instancias
-        SujetoPedido sujetoPedido1 = new SujetoPedido();
-        SujetoPedido sujetoPedido2 = new SujetoPedido();
-        ObservadorUsuario observador = new ObservadorUsuario();
+        PedidoManager pedidoManager = PedidoManager.getInstancia();
+        NotificadorEstadoPedido observador = NotificadorEstadoPedido.getInstancia();
 
-        // Agregar observador al sujeto
-        sujetoPedido1.agregarObservador(observador);
+        // Agregar observador
+        pedidoManager.agregarObservador(observador);
 
-        // Iniciar el proceso de pedido
-        EstadoPedido estadoInicial = EstadoPedidoPendienteConfirmacion.getInstancia();
-        sujetoPedido1.cambiarEstado(estadoInicial);
+        // Realizar un nuevo pedido
+        Pedido pedido = sistema.realizarNuevoPedido(pedidoManager);
 
-        // Simular cambios de estado
-        sujetoPedido1.cambiarEstado(EstadoPedidoConfirmado.getInstancia());
-        sujetoPedido1.cambiarEstado(EstadoPedidoEnProceso.getInstancia());
-        sujetoPedido1.cambiarEstado(EstadoPedidoListoParaEnvio.getInstancia());
-        sujetoPedido1.cambiarEstado(EstadoPedidoEnTransito.getInstancia());
-        sujetoPedido1.cambiarEstado(EstadoPedidoEntregado.getInstancia());
+        // Consultar el estado del pedido
+        sistema.consultarEstadoPedido(pedido.getId());
 
-        // Realizar un nuevo pedido con sujetoPedido2
-        sistema.realizarNuevoPedido(sujetoPedido2);
+        sistema.modificarEstadoPedido(pedido, EstadoPedidoConfirmado.getInstancia());
 
-        // Consultar el estado del pedido para sujetoPedido2
-        sistema.consultarEstadoPedido(sujetoPedido2);
+        sistema.modificarEstadoPedido(pedido, EstadoPedidoEnProceso.getInstancia());
 
         // Cancelar el pedido para sujetoPedido2
-        sistema.cancelarPedido(sujetoPedido2);
+        sistema.cancelarPedido(pedido);
+
+        // Consultar el estado del pedido
+        sistema.consultarEstadoPedido(pedido.getId());
     }
 }

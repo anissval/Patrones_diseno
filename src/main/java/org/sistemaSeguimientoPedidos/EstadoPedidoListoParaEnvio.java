@@ -1,18 +1,20 @@
 package org.sistemaSeguimientoPedidos;
 
 public class EstadoPedidoListoParaEnvio implements EstadoPedido {
-    private static EstadoPedidoListoParaEnvio instancia = new EstadoPedidoListoParaEnvio();
+    private static EstadoPedidoListoParaEnvio instancia;
 
     private EstadoPedidoListoParaEnvio() {
     }
 
     public static EstadoPedidoListoParaEnvio getInstancia() {
+        if (instancia == null) {
+            instancia = new EstadoPedidoListoParaEnvio();
+        }
         return instancia;
     }
 
-    public void procesarPedido(SujetoPedido sujetoPedido) {
-        // Lógica para procesar un pedido en proceso
-        System.out.println("El pedido está listo para ser enviado o recogido");
-        sujetoPedido.cambiarEstado(EstadoPedidoEntregado.getInstancia());
+    @Override
+    public void procesarPedido(Pedido pedido) {
+        System.out.println("El pedido " + pedido.getId() + "  está listo para ser enviado o recogido");
     }
 }

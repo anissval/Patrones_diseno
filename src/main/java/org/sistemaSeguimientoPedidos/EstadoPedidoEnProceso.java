@@ -1,18 +1,20 @@
 package org.sistemaSeguimientoPedidos;
 
 public class EstadoPedidoEnProceso implements EstadoPedido {
-    private static EstadoPedidoEnProceso instancia = new EstadoPedidoEnProceso();
+    private static EstadoPedidoEnProceso instancia;
 
     private EstadoPedidoEnProceso() {
     }
 
     public static EstadoPedidoEnProceso getInstancia() {
+        if (instancia == null) {
+            instancia = new EstadoPedidoEnProceso();
+        }
         return instancia;
     }
 
-    public void procesarPedido(SujetoPedido sujetoPedido) {
-        // Lógica para procesar un pedido en proceso
-        System.out.println("El pedido está en proceso de preparación");
-        sujetoPedido.cambiarEstado(EstadoPedidoEntregado.getInstancia());
+    @Override
+    public void procesarPedido(Pedido pedido) {
+        System.out.println("El pedido " + pedido.getId() + " está en proceso de preparación");
     }
 }

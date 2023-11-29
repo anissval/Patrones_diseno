@@ -4,42 +4,57 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class SistemaSeguimientoPedidos {
-    private static SistemaSeguimientoPedidos instancia = new SistemaSeguimientoPedidos();
-    private Map<SujetoPedido, EstadoPedido> pedidos = new HashMap<>();
+    private static SistemaSeguimientoPedidos instancia;
+    private Map<String, Pedido> pedidos = new HashMap<>();
 
     private SistemaSeguimientoPedidos() {
     }
 
     public static SistemaSeguimientoPedidos getInstancia() {
+        if (instancia == null) {
+            instancia = new SistemaSeguimientoPedidos();
+        }
         return instancia;
     }
 
-    public void realizarNuevoPedido(SujetoPedido sujetoPedido) {
-        // Lógica para realizar un nuevo pedido (por ejemplo, establecer estado inicial)
+    public Pedido realizarNuevoPedido(PedidoManager pedidoManager) {
+        Pedido pedido = new Pedido();
+        System.out.println("----- Nuevo pedido realizado -----");
         EstadoPedido estadoInicial = EstadoPedidoPendienteConfirmacion.getInstancia();
-        sujetoPedido.cambiarEstado(estadoInicial);
-        pedidos.put(sujetoPedido, estadoInicial);
-        System.out.println("Nuevo pedido realizado");
+        pedido.setEstadoPedido(estadoInicial);
+        pedidoManager.notificarObservadores(pedido, estadoInicial);
+        pedidos.put(pedido.getId(), pedido);
+        return pedido;
     }
 
-    public void consultarEstadoPedido(SujetoPedido sujetoPedido) {
+    public void consultarEstadoPedido(String pedidoID) {
         // Lógica para consultar el estado del pedido
-        if (pedidos.containsKey(sujetoPedido)) {
-            EstadoPedido estadoActual = pedidos.get(sujetoPedido);
-            System.out.println("Estado actual del pedido: " + estadoActual.getClass().getSimpleName());
+        if (pedidos.containsKey(pedidoID)) {
+            Pedido pedido = pedidos.get(pedidoID);
+            System.out.println("----- Estado actual del pedido: " + pedido.getEstadoPedido().getClass().getSimpleName());
         } else {
-            System.out.println("Pedido no encontrado");
+            System.out.println("---- Pedido no encontrado");
         }
     }
 
-    public void cancelarPedido(SujetoPedido sujetoPedido) {
+    public void cancelarPedido(Pedido pedido) {
         // Lógica para cancelar un pedido
-        if (pedidos.containsKey(sujetoPedido)) {
-            sujetoPedido.cambiarEstado(EstadoPedidoCancelado.getInstancia());
-            pedidos.remove(sujetoPedido);
-            System.out.println("Pedido cancelado");
+        if (pedidos.containsKey(pedido.getId())) {
+            EstadoPedido estadoCancelado = EstadoPedidoCancelado.getInstancia();
+            pedidos.remove(pedido.getId());
+            System.out.println("----- Pedido cancelado");
+            PedidoManager.getInstancia().notificarObservadores(pedido, estadoCancelado);
         } else {
-            System.out.println("Pedido no encontrado");
+            System.out.println("----- Pedido no encontrado");
+        }
+    }
+
+    public void modificarEstadoPedido(Pedido pedido, EstadoPedido nuevoEstado) {
+        if (pedidos.containsKey(pedido.getId())) {
+            pedido.setEstadoPedido(nuevoEstado);
+            PedidoManager.getInstancia().notificarObservadores(pedido, nuevoEstado);
+        } else {
+            System.out.println("----- Pedido no encontrado");
         }
     }
 }
